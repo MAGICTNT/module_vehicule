@@ -5,13 +5,16 @@ import fr.maxime.entity.Camion;
 import fr.maxime.entity.Moto;
 import fr.maxime.entity.Voiture;
 import fr.maxime.entity.Vehicule;
+import fr.maxime.enums.CouleurVehicule;
 import fr.maxime.interfaces.IVehicule;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
     private static ArrayList<IVehicule> vehicules = new ArrayList<>();
+    private static Map<Integer, CouleurVehicule> allCouleurById = CouleurVehicule.getAllCouleursParId();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -49,33 +52,34 @@ public class Main {
         String modele = scanner.next();
         System.out.print("Entrez l'année: ");
         int annee = scanner.nextInt();
+        String color = menuColor(scanner);
 
         switch (type) {
             case 1:
                 System.out.print("Entrez le nombre de portes: ");
                 int nombrePortes = scanner.nextInt();
-                Voiture voiture = new Voiture(marque, modele, annee, nombrePortes);
+                Voiture voiture = new Voiture(marque, modele,CouleurVehicule.BLEU.getNom(), annee, nombrePortes);
                 vehicules.add(voiture);
                 voiture.afficherDetails();
                 break;
             case 2:
                 System.out.print("La moto a-t-elle un sidecar (true/false) ? ");
                 boolean aSidecar = scanner.nextBoolean();
-                Moto moto = new Moto(marque, modele, annee, aSidecar);
+                Moto moto = new Moto(marque, modele,CouleurVehicule.BLEU.getNom(), annee, aSidecar);
                 vehicules.add(moto);
                 moto.afficherDetails();
                 break;
             case 3:
                 System.out.print("Entrez la capacité de charge (tonnes) : ");
                 int capaciteCharge = scanner.nextInt();
-                Camion camion = new Camion(marque, modele, annee, capaciteCharge);
+                Camion camion = new Camion(marque, modele,CouleurVehicule.BLEU.getNom(), annee, capaciteCharge);
                 vehicules.add(camion);
                 camion.afficherDetails();
                 break;
             case 4:
                 System.out.print("Entrez la longueur (mètres) : ");
                 double longueur = scanner.nextDouble();
-                Bateau bateau = new Bateau(marque, modele, annee, longueur);
+                Bateau bateau = new Bateau(marque, modele,CouleurVehicule.BLEU.getNom(), annee, longueur);
                 vehicules.add(bateau);
                 bateau.afficherDetails();
                 break;
@@ -109,6 +113,24 @@ public class Main {
         System.out.print("Choisissez une option: ");
         int type = scanner.nextInt();
         return type;
+    }
+
+    private static String menuColor(Scanner scanner){
+        for (Map.Entry<Integer, CouleurVehicule> entry : allCouleurById.entrySet()) {
+            int idEntry = entry.getKey();
+            CouleurVehicule couleur = entry.getValue();
+            System.out.println(idEntry + " - " + couleur.getNom());
+        }
+        System.out.print("Entrez l'ID de la couleur : ");
+        int id = scanner.nextInt();
+
+        CouleurVehicule couleurChoisie = CouleurVehicule.getCouleurById(id);
+        try {
+            return couleurChoisie.getNom();
+        }catch (Exception e){
+            System.out.println("couleur inexistante, Couleur par defaut choisi ");
+            return "Noir";
+        }
     }
 
     private static void afficherTotaux() {
